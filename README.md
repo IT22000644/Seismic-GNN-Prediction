@@ -83,135 +83,7 @@ This project explores cutting-edge **spatiotemporal Graph Neural Networks (GNNs)
 ### **Setup**
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/seismic-gnn-prediction.git
-cd seismic-gnn-prediction
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Install package in development mode
-pip install -e .
-```
-
-### **Conda Alternative**
-```bash
-# Create conda environment
-conda create -n seismic-gnn python=3.10
-conda activate seismic-gnn
-
-# Install PyTorch with CUDA support
-conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-
-# Install remaining dependencies
-pip install -r requirements.txt
-```
-
----
-
-## 🔥 **Quick Start**
-
-### **1. Download Data**
-```bash
-# Download STEAD dataset (one-time setup)
-python scripts/download_data.py --dataset stead --region california
-
-# Expected output: ~800MB Southern California subset
-```
-
-### **2. Explore Data**
-```bash
-# Launch Jupyter and open first notebook
-jupyter notebook notebooks/01_data_exploration.ipynb
-```# Seismic GNN Prediction 🌍
-
-<div align="center">
-
-![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Status](https://img.shields.io/badge/status-in%20development-yellow.svg)
-
-**Spatiotemporal Graph Neural Networks for Earthquake Magnitude Prediction**
-
-*Advancing seismology through deep learning and 3D visualization*
-
-[Installation](#-installation) • [Quick Start](#-quick-start) • [Models](#-models) • [Results](#-results) • [Team](#-team)
-
-</div>
-
----
-
-## 🎯 **Project Overview**
-
-This project explores cutting-edge **spatiotemporal Graph Neural Networks (GNNs)** for earthquake magnitude prediction, combining traditional deep learning approaches with novel graph-based spatial relationship modeling. We analyze earthquake propagation patterns through interactive 3D spatiotemporal visualizations.
-
-### 🔬 **Research Innovation**
-- **First comprehensive application** of GNNs to earthquake propagation patterns
-- **Novel spatiotemporal modeling** combining spatial graphs with temporal sequences
-- **Interactive 3D visualization** of earthquake networks and propagation chains
-- **Multi-model comparison** across traditional and graph-based approaches
-
----
-
-## 🧠 **Models & Architectures**
-
-| Model | Type | Innovation Level | Key Strength |
-|-------|------|-----------------|--------------|
-| **MLP Baseline** | Traditional | ⭐ | Engineered feature processing |
-| **1D-CNN** | Deep Learning | ⭐⭐ | Automatic waveform pattern detection |
-| **ST-GCN** | Graph Neural Network | ⭐⭐⭐⭐⭐ | **Earthquake propagation modeling** |
-| **ConvLSTM** | Spatiotemporal | ⭐⭐⭐⭐ | Grid-based spatiotemporal patterns |
-
-### 🌟 **Spatiotemporal GCN (Our Innovation)**
-- **Graph Construction**: Earthquake events connected by spatial proximity and temporal sequences
-- **Message Passing**: Learn how earthquakes influence neighboring events
-- **Temporal Evolution**: LSTM modeling of seismic sequence development
-- **Scientific Interpretation**: Visualize learned propagation patterns
-
-### 🔄 **ConvLSTM Alternative**
-- **Spatial Convolution**: 2D CNN for geographic earthquake patterns
-- **Temporal Memory**: LSTM for long-term seismic dependencies
-- **Grid-Based**: Earthquake activity mapped to latitude/longitude grids
-
----
-
-## 📊 **Dataset**
-
-### **Primary: Stanford Earthquake Dataset (STEAD)**
-- **Size**: 1.2 million labeled earthquake waveforms
-- **Coverage**: Global seismic events (2000-2019)
-- **Components**: 3-channel seismic recordings at 100 Hz
-- **Metadata**: 130+ parameters including location, magnitude, arrival times
-
-### **Regional Focus Areas**
-- **California**: San Andreas fault system (~60K events)
-- **Japan**: Subduction zone earthquakes (~80K events)  
-- **Chile**: Nazca plate boundaries (~40K events)
-- **Turkey**: North Anatolian fault zone (~35K events)
-
-### **Supplementary Data**
-- **USGS ComCat**: Recent earthquake validation data
-- **Fault Databases**: USGS Quaternary fault systems
-- **Tectonic Boundaries**: Global plate boundary models
-
----
-
-## 🚀 **Installation**
-
-### **Prerequisites**
-- Python 3.8+
-- CUDA-capable GPU (recommended)
-- 16GB RAM minimum, 32GB recommended
-- 50GB free disk space for datasets
-
-### **Setup**
-```bash
-# Clone repository
-git clone https://github.com/yourusername/seismic-gnn-prediction.git
+git clone https://github.com/IT22000644/Seismic-GNN-Prediction.git
 cd seismic-gnn-prediction
 
 # Create virtual environment
@@ -255,7 +127,6 @@ python scripts/download_data.py --dataset stead --region california
 # Launch Jupyter and open first notebook
 jupyter notebook notebooks/01_data_exploration.ipynb
 ```
-
 ### **3. Train Models**
 ```bash
 # Train all models with default settings
@@ -502,15 +373,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 **Contact & Support**
 
 ### **Project Links**
-- **🐙 Repository**: https://github.com/IT22000644/seismic-gnn-prediction
+- **🐙 Repository**: https://github.com/IT22000644/Seismic-GNN-Prediction
 - **📊 Documentation**: https://seismic-gnn-docs.readthedocs.io
 - **🎥 Demo Video**: [YouTube Link]
 - **📄 Technical Paper**: [ResearchGate Link]
 
 ### **Get Help**
-- **📋 Issues**: [GitHub Issues](https://github.com/yourusername/seismic-gnn-prediction/issues)
-- **💬 Discussions**: [GitHub Discussions](https://github.com/yourusername/seismic-gnn-prediction/discussions)
-- **📧 Email**: seismic-gnn-team@sliit.lk
+- **📋 Issues**: [GitHub Issues](https://github.com/IT22000644/Seismic-GNN-Prediction/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/IT22000644/Seismic-GNN-Prediction/discussions)
+- **📧 Email**: manilka.projects@gmail.com
 
 ---
 
@@ -748,7 +619,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### **Research Community**
 - Stanford Seismology Lab for pioneering ML applications in seismology
 - PyTorch Geometric team for advancing graph neural networks
-- Global seismological community for open data sharing
+- Global seismological community for open data sharingseismic-gnn-team@sliit.lk
 
 ---
 
@@ -776,13 +647,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 **Contact & Support**
 
 ### **Project Links**
-- **🐙 Repository**: https://github.com/IT22000644/seismic-gnn-prediction
+- **🐙 Repository**: https://github.com/IT22000644/Seismic-GNN-Prediction
 - **📊 Documentation**: 
 - **🎥 Demo Video**: [YouTube Link]
 
 ### **Get Help**
-- **📋 Issues**: [GitHub Issues](https://github.com/IT22000644/seismic-gnn-prediction/issues)
-- **💬 Discussions**: [GitHub Discussions](https://github.com/IT22000644/seismic-gnn-prediction/discussions)
+- **📋 Issues**: [GitHub Issues](https://github.com/IT22000644/Seismic-GNN-Prediction/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/IT22000644/Seismic-GNN-Prediction/discussions)
 - **📧 Email**: manilkadikkumbura17@gmail.com
 
 ---
