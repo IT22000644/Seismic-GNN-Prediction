@@ -32,7 +32,7 @@ CONFIG = {
     'min_magnitude': 3.5,
     'max_events': 2000,
     'start_date': '2015-01-01',
-    'end_date': '2023-12-31',
+    'end_date': '2024-12-31',
     'output_dir': 'data/raw',
     
     # Geographic bounds for California
