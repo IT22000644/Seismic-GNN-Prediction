@@ -101,10 +101,8 @@ pip install -e .
 ```bash
 # Create conda environment
 conda create -n seismic-gnn python=3.10
-conda activate seismic-gnn
 
-# Install PyTorch with CUDA support
-conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
+conda activate seismic-gnn
 
 # Install remaining dependencies
 pip install -r requirements.txt
@@ -117,81 +115,12 @@ pip install -r requirements.txt
 ### **1. Download Data**
 ```bash
 # Download STEAD dataset (one-time setup)
-python scripts/download_data.py --dataset stead --region california
-
+python scripts/download_data_minimal.py 
 # Expected output: ~800MB Southern California subset
 ```
 
-### **2. Explore Data**
-```bash
-# Launch Jupyter and open first notebook
-jupyter notebook notebooks/01_data_exploration.ipynb
-```
-### **3. Train Models**
-```bash
-# Train all models with default settings
-python scripts/train_models.py --config config/training_config.yaml
-
-# Train specific model
-python scripts/train_models.py --model st_gcn --epochs 100 --batch_size 32
-
-# Monitor training (optional)
-tensorboard --logdir results/logs/
-```
-
-### **4. Evaluate & Visualize**
-```bash
-# Generate model comparison
-python scripts/evaluate_models.py --output results/evaluation/
-
-# Create 3D visualizations
-jupyter notebook notebooks/06_3d_visualization.ipynb
-```
 
 ---
-
-## 📈 **Results**
-
-### **Performance Comparison (Southern California Subset)**
-
-| Model | RMSE ↓ | MAE ↓ | R² ↑ | Training Time | GPU Memory |
-|-------|--------|-------|------|---------------|------------|
-| MLP Baseline | 0.524 | 0.387 | 0.723 | 15 min | 2GB |
-| 1D-CNN | 0.498 | 0.361 | 0.751 | 2.1 hrs | 4GB |
-| **ST-GCN** | **0.485** | **0.352** | **0.764** | 3.2 hrs | 8GB |
-| ConvLSTM | 0.491 | 0.358 | 0.758 | 2.8 hrs | 6GB |
-
-### **Key Findings**
-- ✅ **ST-GCN achieves best performance** across all metrics
-- ✅ **Spatial relationships matter** - GNN improves accuracy by 2.6%
-- ✅ **Earthquake propagation patterns** successfully learned by graph attention
-- ✅ **3D visualizations reveal** previously unseen seismic network structures
-
-### **Scientific Insights**
-- **Learned attention patterns** correlate with known fault systems
-- **Temporal propagation chains** match aftershock sequence observations
-- **Multi-scale relationships** from local triggering to regional patterns
-
----
-
-## 🔬 **Technical Details**
-
-### **Graph Construction Strategy**
-```python
-# Spatiotemporal graph edges
-def create_earthquake_graph(events):
-    edges = []
-    for i, eq1 in enumerate(events):
-        for j, eq2 in enumerate(events):
-            spatial_dist = haversine_distance(eq1, eq2)  # km
-            temporal_diff = abs(eq1.time - eq2.time).days  # days
-            
-            if spatial_dist <= 50 and temporal_diff <= 30:
-                weight = 1.0 / (1.0 + spatial_dist) * 1.0 / (1.0 + temporal_diff)
-                edges.append([i, j, weight])
-    
-    return edges
-```
 
 ### **Model Architectures**
 - **ST-GCN**: 3-layer GCN + 2-layer LSTM + attention mechanism
@@ -199,90 +128,6 @@ def create_earthquake_graph(events):
 - **1D-CNN**: 3 conv blocks + global average pooling + dropout
 - **MLP**: 4-layer network (256→128→64→1) + batch normalization
 
----
-
-## 📁 **Repository Structure**
-
-```
-seismic-gnn-prediction/
-├── notebooks/           # Jupyter notebooks (weekly development)
-├── src/                # Source code modules
-│   ├── data/           # Data loading and preprocessing  
-│   ├── models/         # Model architectures
-│   ├── training/       # Training utilities
-│   └── evaluation/     # Metrics and visualization
-├── scripts/            # Command-line tools
-├── config/             # Configuration files
-├── results/            # Generated outputs (models, figures)
-└── docs/              # Documentation
-```
-
----
-
-## 📚 **Usage Examples**
-
-### **Basic Model Training**
-```python
-from src.models import SpatioTemporalGCN
-from src.data import EarthquakeDataLoader
-from src.training import Trainer
-
-# Load data
-loader = EarthquakeDataLoader()
-train_data, val_data = loader.load_stead_subset('california', split=True)
-
-# Initialize model
-model = SpatioTemporalGCN(
-    num_features=10,
-    hidden_dim=64,
-    num_layers=3
-)
-
-# Train model
-trainer = Trainer(model, train_data, val_data)
-history = trainer.train(epochs=100, lr=0.001)
-```
-
-### **3D Visualization**
-```python
-from src.evaluation import SpatioTemporalVisualizer
-
-viz = SpatioTemporalVisualizer()
-
-# Create 3D earthquake distribution
-viz.plot_3d_spatiotemporal(
-    earthquakes=earthquake_data,
-    color_by='magnitude',
-    size_by='magnitude',
-    animate=True
-)
-
-# Visualize learned propagation network
-viz.plot_propagation_network(
-    model=trained_gcn_model,
-    graph_data=test_graphs,
-    show_attention=True
-)
-```
-
-### **Custom Graph Construction**
-```python
-from src.data import GraphBuilder
-
-builder = GraphBuilder(
-    spatial_threshold=50,    # km
-    temporal_threshold=30,   # days
-    min_magnitude=3.0
-)
-
-# Create earthquake propagation graph
-graph = builder.build_spatiotemporal_graph(earthquake_events)
-
-# Add geological context
-graph = builder.add_fault_connections(graph, fault_data)
-```
-
----
 
 ## 🎓 **Academic Context**
 
