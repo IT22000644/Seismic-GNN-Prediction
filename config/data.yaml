@@ -1,0 +1,14 @@
+# Data / preprocessing config
+grid_size: 50
+lookback: 50
+horizon_hours: 72
+log1p_input: true
+time_decay: 0.0
+splits:
+  train: 0.70
+  val: 0.15
+  test: 0.15
+seed: 42
+paths:
+  fallback_data: data/interim/quakes_clean.csv
+  processed_dir: data/processed/model_ready/cnn_map

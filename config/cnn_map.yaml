@@ -1,0 +1,10 @@
+# CNN training config
+batch_size: 64
+epochs: 100
+lr: 0.001
+weight_decay: 0.0001
+dropout: 0.1
+use_mixed_precision: true
+loss: huber
+metrics: [mae, rmse]
+artifacts_dir: artifacts/cnn/map
