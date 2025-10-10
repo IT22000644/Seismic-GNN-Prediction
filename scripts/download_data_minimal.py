@@ -30,8 +30,8 @@ logger = logging.getLogger(__name__)
 CONFIG = {
     'region': 'California',
     'min_magnitude': 3.5,
-    'max_events': 2000,
-    'start_date': '2015-01-01',
+    'max_events': 20000,
+    'start_date': '1980-01-01',
     'end_date': '2024-12-31',
     'output_dir': 'data/raw',
     
