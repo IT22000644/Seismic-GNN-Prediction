@@ -39,4 +39,6 @@ Xy_FILES = dict(
     y_test  = PROCESSED / "y_test_cnn_map.npy",
 )
 
-FALLBACK_DATA = INTERIM / "quakes_clean.csv"
+# Default events table to build grids from
+# Use the full processed dataset with engineered features
+FALLBACK_DATA = DATA_DIR / "processed" / "earthquakes_with_features.csv"

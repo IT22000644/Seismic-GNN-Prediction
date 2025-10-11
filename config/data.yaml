@@ -10,5 +10,5 @@ splits:
   test: 0.15
 seed: 42
 paths:
-  fallback_data: data/interim/quakes_clean.csv
+  fallback_data: data/processed/earthquakes_with_features.csv
   processed_dir: data/processed/model_ready/cnn_map
