@@ -1,0 +1,5 @@
+Architecture,Best Model,F1 Score,Precision,Recall,ROC-AUC,Parameters,F1 Improvement (%)
+LSTM,Shallow LSTM,0.6958,0.7859,0.6242,0.7801,"26,000",+4.36%
+DNN,DNN-Standard,0.6667,0.9176,0.5235,0.8169,"14,562",+0.00%
+GNN,GCN,0.6555,0.7744,0.5682,0.7859,"12,578",-1.68%
+CNN,Deep CNN,0.5449,0.5522,0.5535,0.5819,"1,068,930",-18.27%

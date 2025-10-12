@@ -1,520 +1,295 @@
-# Seismic GNN Prediction 🌍
+# Earthquake Aftershock Prediction using Deep Learning
 
-<div align="center">
+A comparative analysis of four deep learning architectures (DNN, LSTM, GNN, CNN) for predicting earthquake aftershocks using the Southern California Earthquake Catalog (1990-2024).
 
-![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Status](https://img.shields.io/badge/status-in%20development-yellow.svg)
+## Project Overview
 
-**Spatiotemporal Graph Neural Networks for Earthquake Magnitude Prediction**
+This project evaluates multiple deep learning approaches to predict whether an earthquake will trigger aftershocks within 7 days and a 50km radius. We compare 14 model variants across 4 architectures to identify the most effective approach for aftershock prediction.
 
-*Advancing seismology through deep learning and 3D visualization*
+### Key Results
 
-[Installation](#-installation) • [Quick Start](#-quick-start) • [Models](#-models) • [Results](#-results) • [Team](#-team)
+| Architecture | Best Model | F1 Score | Precision | Recall | Key Strength |
+|--------------|------------|----------|-----------|--------|--------------|
+| **LSTM** | Shallow LSTM | **0.6958** | 78.59% | 62.42% | Temporal patterns |
+| **DNN** | Standard DNN | 0.6667 | 91.76% | 52.35% | Simple & fast |
+| **GNN** | GCN | 0.6555 | 77.44% | 56.82% | Spatial relationships |
+| **CNN** | Shallow CNN | 0.5448 | 57.30% | 55.70% | Spatial grids |
 
-</div>
+**Winner:** Shallow LSTM achieved the best F1 score of 0.6958, demonstrating that temporal sequence modeling provides a significant advantage (+4.4% over DNN baseline) for aftershock prediction.
 
----
+## Dataset
 
-## 🎯 **Project Overview**
+- **Source:** USGS Earthquake Catalog (Southern California)
+- **Time Period:** 1990-2024
+- **Size:** 5,727 earthquakes
+- **Magnitude Range:** 3.5 to 7.2
+- **Task:** Binary classification (triggers aftershock: yes/no)
+- **Class Balance:** 48% negative, 52% positive (well-balanced)
+- **Aftershock Definition:** Subsequent earthquake within 7 days and 50km radius
 
-This project explores cutting-edge **spatiotemporal Graph Neural Networks (GNNs)** for earthquake magnitude prediction, combining traditional deep learning approaches with novel graph-based spatial relationship modeling. We analyze earthquake propagation patterns through interactive 3D spatiotemporal visualizations.
+## Architecture Comparisons
 
-### 🔬 **Research Innovation**
-- **First comprehensive application** of GNNs to earthquake propagation patterns
-- **Novel spatiotemporal modeling** combining spatial graphs with temporal sequences
-- **Interactive 3D visualization** of earthquake networks and propagation chains
-- **Multi-model comparison** across traditional and graph-based approaches
+### 1. Deep Neural Networks (DNN)
+**Approach:** Tabular feature-based classification
+- **Input:** 28 engineered features per earthquake
+- **Features:** Spatial (fault distance, clustering), Temporal (inter-event time, rolling windows), Seismic (magnitude trends)
+- **Variants:** Standard (3 layers), Shallow (2 layers), Deep (4 layers)
+- **Best:** Standard DNN (F1 = 0.6667)
+- **Strength:** High precision (91.76%), fast training
+- **Weakness:** Lower recall (52.35%)
 
----
+### 2. Long Short-Term Memory (LSTM)
+**Approach:** Temporal sequence modeling
+- **Input:** Sequences of 10 consecutive earthquakes
+- **Features:** 28 features per earthquake in sequence
+- **Variants:** Standard (2 LSTM layers), Shallow (1 layer), Deep (3 layers), Bidirectional
+- **Best:** Shallow LSTM (F1 = 0.6958) **WINNER**
+- **Strength:** Captures temporal patterns, best overall performance
+- **Improvement:** +4.4% F1 over DNN, +19.2% recall improvement
 
-## 🧠 **Models & Architectures**
+### 3. Graph Neural Networks (GNN)
+**Approach:** Graph-based spatial-temporal relationships
+- **Input:** Graph with earthquakes as nodes, proximity as edges
+- **Graph Construction:** k-NN spatial edges (within 50km) + temporal edges (within 6 hours)
+- **Variants:** GCN, GAT, GraphSAGE, Temporal-GNN
+- **Best:** GCN (F1 = 0.6555)
+- **Finding:** Graph structure didn't improve over tabular features (-1.7% vs DNN)
+- **Hypothesis:** k-NN graphs may not reflect true stress transfer physics
 
-| Model | Type | Innovation Level | Key Strength |
-|-------|------|-----------------|--------------|
-| **MLP Baseline** | Traditional | ⭐ | Engineered feature processing |
-| **1D-CNN** | Deep Learning | ⭐⭐ | Automatic waveform pattern detection |
-| **ST-GCN** | Graph Neural Network | ⭐⭐⭐⭐⭐ | **Earthquake propagation modeling** |
-| **ConvLSTM** | Spatiotemporal | ⭐⭐⭐⭐ | Grid-based spatiotemporal patterns |
+### 4. Convolutional Neural Networks (CNN)
+**Approach:** Spatial grid-based modeling
+- **Input:** 32×32 spatial grids centered on each earthquake
+- **Channels:** 3 (earthquake density, average magnitude, temporal recency)
+- **Context:** 50-event lookback window, 0.5° spatial radius
+- **Variants:** Standard (4 conv blocks), Shallow (2 blocks), Deep (residual connections)
+- **Best:** Shallow CNN (F1 = 0.5448)
+- **Finding:** Poor performance (-18% vs DNN)
+- **Issue:** Spatial grids alone insufficient; averaging loses individual earthquake information
 
-### 🌟 **Spatiotemporal GCN (Our Innovation)**
-- **Graph Construction**: Earthquake events connected by spatial proximity and temporal sequences
-- **Message Passing**: Learn how earthquakes influence neighboring events
-- **Temporal Evolution**: LSTM modeling of seismic sequence development
-- **Scientific Interpretation**: Visualize learned propagation patterns
+## Project Structure
 
-### 🔄 **ConvLSTM Alternative**
-- **Spatial Convolution**: 2D CNN for geographic earthquake patterns
-- **Temporal Memory**: LSTM for long-term seismic dependencies
-- **Grid-Based**: Earthquake activity mapped to latitude/longitude grids
+```
+Seismic-GNN-Prediction/
+├── data/
+│   ├── raw/                          # USGS earthquake catalog
+│   └── processed/
+│       ├── features/                 # Engineered features
+│       └── model_ready/              # Prepared inputs for each architecture
+├── models/
+│   ├── dnn/                          # DNN architectures
+│   ├── lstm/                         # LSTM architectures
+│   ├── gnn/                          # GNN architectures (GCN, GAT, GraphSAGE)
+│   └── cnn/                          # CNN architectures
+├── notebooks/
+│   ├── 01_data_acquisition.ipynb    # Data loading and initial processing
+│   ├── 02_exploratory_analysis.ipynb # EDA and visualization
+│   ├── 03_feature_engineering.ipynb  # Feature creation for all architectures
+│   ├── 04_dnn_training.ipynb        # DNN model training
+│   ├── 05_lstm_training.ipynb       # LSTM model training (deprecated)
+│   ├── 06_cnn_aftershock_prediction.ipynb # CNN model training
+│   ├── 07_lstm_sequence_prediction.ipynb  # LSTM sequence training (current)
+│   ├── 08_model_comparison_analysis.ipynb # Cross-architecture comparison (deprecated)
+│   └── 09_model_comparison_analysis.ipynb # Cross-architecture comparison (current)
+├── results/
+│   ├── dnn/                          # DNN results and visualizations
+│   ├── lstm/                         # LSTM results and visualizations
+│   ├── gnn/                          # GNN results and visualizations
+│   └── cnn/                          # CNN results and visualizations
+├── requirements.txt                  # Python dependencies
+├── report_generation_prompt.md       # Comprehensive report structure
+├── VIDEO_WALKTHROUGH_PROMPT.md       # 10-minute video presentation guide
+└── README.md                         # This file
+```
 
----
+## Installation
 
-## 📊 **Dataset**
-
-### **Primary: Stanford Earthquake Dataset (STEAD)**
-- **Size**: 1.2 million labeled earthquake waveforms
-- **Coverage**: Global seismic events (2000-2019)
-- **Components**: 3-channel seismic recordings at 100 Hz
-- **Metadata**: 130+ parameters including location, magnitude, arrival times
-
-### **Regional Focus Areas**
-- **California**: San Andreas fault system (~60K events)
-- **Japan**: Subduction zone earthquakes (~80K events)  
-- **Chile**: Nazca plate boundaries (~40K events)
-- **Turkey**: North Anatolian fault zone (~35K events)
-
-### **Supplementary Data**
-- **USGS ComCat**: Recent earthquake validation data
-- **Fault Databases**: USGS Quaternary fault systems
-- **Tectonic Boundaries**: Global plate boundary models
-
----
-
-## 🚀 **Installation**
-
-### **Prerequisites**
+### Prerequisites
 - Python 3.8+
-- CUDA-capable GPU (recommended)
-- 16GB RAM minimum, 32GB recommended
-- 50GB free disk space for datasets
+- CUDA-capable GPU (recommended for GNN/CNN training)
 
-### **Setup**
+### Setup
+
 ```bash
-# Clone repository
+# Clone the repository
 git clone https://github.com/IT22000644/Seismic-GNN-Prediction.git
-cd seismic-gnn-prediction
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+cd Seismic-GNN-Prediction
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Install package in development mode
-pip install -e .
 ```
 
-### **Conda Alternative**
+### Key Dependencies
+- PyTorch & PyTorch Geometric (GNN support)
+- NumPy, Pandas, Scikit-learn
+- Matplotlib, Seaborn (visualization)
+- Obspy (seismology data processing)
+
+## Usage
+
+### 1. Data Acquisition and Exploration
 ```bash
-# Create conda environment
-conda create -n seismic-gnn python=3.10
-
-conda activate seismic-gnn
-
-# Install remaining dependencies
-pip install -r requirements.txt
+jupyter notebook notebooks/01_data_acquisition.ipynb
+jupyter notebook notebooks/02_exploratory_analysis.ipynb
 ```
 
----
-
-## 🔥 **Quick Start**
-
-### **1. Download Data**
+### 2. Feature Engineering
 ```bash
-# Download STEAD dataset (one-time setup)
-python scripts/download_data_minimal.py 
-# Expected output: ~800MB Southern California subset
+# Generate features for all architectures
+jupyter notebook notebooks/03_feature_engineering.ipynb
 ```
 
+This notebook creates:
+- **DNN features:** 28 tabular features per earthquake
+- **LSTM features:** 10-event sequences with 28 features each
+- **GNN features:** Graph structure with node features and edge indices
+- **CNN features:** 32×32×3 spatial context grids
 
----
+### 3. Model Training
 
-### **Model Architectures**
-- **ST-GCN**: 3-layer GCN + 2-layer LSTM + attention mechanism
-- **ConvLSTM**: 2D conv (5×5 kernels) + LSTM (64 hidden units)
-- **1D-CNN**: 3 conv blocks + global average pooling + dropout
-- **MLP**: 4-layer network (256→128→64→1) + batch normalization
-
-
-## 🎓 **Academic Context**
-
-### **Course Information**
-- **Course**: SE4050 - Deep Learning
-- **Institution**: Sri Lanka Institute of Information Technology (SLIIT)
-- **Semester**: July 2025
-- **Assignment**: Final Project (100 marks)
-- **Duration**: 12 weeks
-
-### **Learning Objectives**
-- ✅ Apply deep learning to real-world seismic data
-- ✅ Implement cutting-edge GNN architectures
-- ✅ Develop spatiotemporal modeling skills
-- ✅ Create scientific visualizations and interpretations
-- ✅ Compare multiple deep learning approaches
-
-### **Deliverables**
-- **Technical Report** (comprehensive analysis and results)
-- **Code Repository** (complete implementation)
-- **VIVA Presentation** (20-minute demonstration)
-- **Video Demo** (10-minute YouTube presentation)
-
----
-
-## 🤝 **Contributing**
-
-We welcome contributions from the research community!
-
-### **How to Contribute**
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### **Areas for Contribution**
-- 🔬 **Novel GNN architectures** for spatiotemporal data
-- 📊 **Additional visualization techniques**
-- 🌍 **New regional datasets** and validation
-- ⚡ **Performance optimizations**
-- 📚 **Documentation improvements**
-
----
-
-## 📜 **License**
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 **Acknowledgments**
-
-### **Datasets & Tools**
-- **[STEAD Dataset](https://github.com/smousavi05/STEAD)** by Stanford Seismology Lab
-- **[SeisBench](https://seisbench.readthedocs.io/)** machine learning framework
-- **[PyTorch Geometric](https://pytorch-geometric.readthedocs.io/)** for GNN implementation
-- **[USGS](https://earthquake.usgs.gov/)** for earthquake catalogs and fault databases
-
-### **Research Community**
-- Stanford Seismology Lab for pioneering ML applications in seismology
-- PyTorch Geometric team for advancing graph neural networks
-- Global seismological community for open data sharing
-
----
-
-## 👥 **Team**
-
-<div align="center">
-
-### **SE4050 Deep Learning Project Team**
-
-| Role | Name | Student ID | Email | LinkedIn |
-|------|------|------------|-------|----------|
-| **Team Leader** | [Your Name] | [ID] | [email@sliit.lk] | [LinkedIn] |
-| **Data Engineer** | [Name 2] | [ID] | [email@sliit.lk] | [LinkedIn] |
-| **ML Engineer** | [Name 3] | [ID] | [email@sliit.lk] | [LinkedIn] |
-| **Visualization Specialist** | [Name 4] | [ID] | [email@sliit.lk] | [LinkedIn] |
-
-**Instructor**: Dr. [Instructor Name]  
-**Institution**: Sri Lanka Institute of Information Technology  
-**Project Duration**: January - March 2025
-
-</div>
-
----
-
-## 📞 **Contact & Support**
-
-### **Project Links**
-- **🐙 Repository**: https://github.com/IT22000644/Seismic-GNN-Prediction
-- **📊 Documentation**: https://seismic-gnn-docs.readthedocs.io
-- **🎥 Demo Video**: [YouTube Link]
-- **📄 Technical Paper**: [ResearchGate Link]
-
-### **Get Help**
-- **📋 Issues**: [GitHub Issues](https://github.com/IT22000644/Seismic-GNN-Prediction/issues)
-- **💬 Discussions**: [GitHub Discussions](https://github.com/IT22000644/Seismic-GNN-Prediction/discussions)
-- **📧 Email**: manilka.projects@gmail.com
-
----
-
-<div align="center">
-
-### **🌟 Star this repository if you find it useful! 🌟**
-
-**Made with ❤️ for advancing earthquake science through deep learning**
-
-*Bridging the gap between artificial intelligence and seismology*
-
----
-
-![Earthquake Animation](https://via.placeholder.com/600x300/1f77b4/ffffff?text=3D+Spatiotemporal+Earthquake+Visualization)
-
-*Interactive 3D visualization of earthquake propagation patterns*
-
-</div>
-
-### **3. Train Models**
+**Train DNN models:**
 ```bash
-# Train all models with default settings
-python scripts/train_models.py --config config/training_config.yaml
-
-# Train specific model
-python scripts/train_models.py --model st_gcn --epochs 100 --batch_size 32
-
-# Monitor training (optional)
-tensorboard --logdir results/logs/
+jupyter notebook notebooks/04_dnn_training.ipynb
 ```
 
-### **4. Evaluate & Visualize**
+**Train LSTM models:**
 ```bash
-# Generate model comparison
-python scripts/evaluate_models.py --output results/evaluation/
-
-# Create 3D visualizations
-jupyter notebook notebooks/06_3d_visualization.ipynb
+jupyter notebook notebooks/07_lstm_sequence_prediction.ipynb
 ```
 
----
-
-## 📈 **Results**
-
-### **Performance Comparison (Southern California Subset)**
-
-| Model | RMSE ↓ | MAE ↓ | R² ↑ | Training Time | GPU Memory |
-|-------|--------|-------|------|---------------|------------|
-| MLP Baseline | 0.524 | 0.387 | 0.723 | 15 min | 2GB |
-| 1D-CNN | 0.498 | 0.361 | 0.751 | 2.1 hrs | 4GB |
-| **ST-GCN** | **0.485** | **0.352** | **0.764** | 3.2 hrs | 8GB |
-| ConvLSTM | 0.491 | 0.358 | 0.758 | 2.8 hrs | 6GB |
-
-### **Key Findings**
-- ✅ **ST-GCN achieves best performance** across all metrics
-- ✅ **Spatial relationships matter** - GNN improves accuracy by 2.6%
-- ✅ **Earthquake propagation patterns** successfully learned by graph attention
-- ✅ **3D visualizations reveal** previously unseen seismic network structures
-
-### **Scientific Insights**
-- **Learned attention patterns** correlate with known fault systems
-- **Temporal propagation chains** match aftershock sequence observations
-- **Multi-scale relationships** from local triggering to regional patterns
-
----
-
-## 🔬 **Technical Details**
-
-### **Graph Construction Strategy**
-```python
-# Spatiotemporal graph edges
-def create_earthquake_graph(events):
-    edges = []
-    for i, eq1 in enumerate(events):
-        for j, eq2 in enumerate(events):
-            spatial_dist = haversine_distance(eq1, eq2)  # km
-            temporal_diff = abs(eq1.time - eq2.time).days  # days
-            
-            if spatial_dist <= 50 and temporal_diff <= 30:
-                weight = 1.0 / (1.0 + spatial_dist) * 1.0 / (1.0 + temporal_diff)
-                edges.append([i, j, weight])
-    
-    return edges
+**Train CNN models:**
+```bash
+jupyter notebook notebooks/06_cnn_aftershock_prediction.ipynb
 ```
 
-### **Model Architectures**
-- **ST-GCN**: 3-layer GCN + 2-layer LSTM + attention mechanism
-- **ConvLSTM**: 2D conv (5×5 kernels) + LSTM (64 hidden units)
-- **1D-CNN**: 3 conv blocks + global average pooling + dropout
-- **MLP**: 4-layer network (256→128→64→1) + batch normalization
+**Train GNN models:** (Use individual GNN training notebooks in `notebooks/`)
 
----
-
-## 📁 **Repository Structure**
-
-```
-seismic-gnn-prediction/
-├── notebooks/           # Jupyter notebooks (weekly development)
-├── src/                # Source code modules
-│   ├── data/           # Data loading and preprocessing  
-│   ├── models/         # Model architectures
-│   ├── training/       # Training utilities
-│   └── evaluation/     # Metrics and visualization
-├── scripts/            # Command-line tools
-├── config/             # Configuration files
-├── results/            # Generated outputs (models, figures)
-└── docs/              # Documentation
+### 4. Results Comparison
+```bash
+jupyter notebook notebooks/09_model_comparison_analysis.ipynb
 ```
 
----
+This notebook:
+- Loads results from all architectures
+- Selects best model from each
+- Generates comprehensive comparison visualizations
+- Provides detailed performance analysis
 
-## 📚 **Usage Examples**
+## Key Findings
 
-### **Basic Model Training**
-```python
-from src.models import SpatioTemporalGCN
-from src.data import EarthquakeDataLoader
-from src.training import Trainer
+### 1. Temporal Context is Crucial (+4.4%)
+- LSTM's sequential modeling captured temporal patterns that static DNNs missed
+- Recall improvement: +19.2% (62.42% vs 52.35%)
+- Aligns with seismological theory (Omori's Law: aftershock rate decays with time)
 
-# Load data
-loader = EarthquakeDataLoader()
-train_data, val_data = loader.load_stead_subset('california', split=True)
+### 2. Graph Structure Didn't Help (-1.7%)
+- k-NN spatial graphs didn't improve over tabular features
+- GCN performance slightly worse than DNN baseline
+- Hypothesis: Simple proximity doesn't capture stress transfer physics
+- Future work: Physics-informed graph edges using Coulomb stress models
 
-# Initialize model
-model = SpatioTemporalGCN(
-    num_features=10,
-    hidden_dim=64,
-    num_layers=3
-)
+### 3. Spatial Grids Alone Insufficient (-18%)
+- CNNs performed poorly compared to other architectures
+- 32×32 averaging lost individual earthquake information
+- Spatial patterns alone can't predict temporal aftershock sequences
+- Better suited for regional risk assessment than individual prediction
 
-# Train model
-trainer = Trainer(model, train_data, val_data)
-history = trainer.train(epochs=100, lr=0.001)
-```
+### 4. Complexity Paradox: Simpler Models Often Better
+- Shallow LSTM (1 layer) > Deep LSTM (3 layers)
+- Standard DNN > Deep DNN
+- Dataset size (5,727 samples) limits deep model effectiveness
+- More parameters ≠ better performance
 
-### **3D Visualization**
-```python
-from src.evaluation import SpatioTemporalVisualizer
+### 5. Precision-Recall Trade-offs
+- **DNN:** High precision (91.76%), low recall (52.35%) - very conservative
+- **LSTM:** Balanced trade-off (78.59% precision, 62.42% recall)
+- **CNN:** Near-random performance (57% precision, 56% recall)
 
-viz = SpatioTemporalVisualizer()
+## Practical Implications
 
-# Create 3D earthquake distribution
-viz.plot_3d_spatiotemporal(
-    earthquakes=earthquake_data,
-    color_by='magnitude',
-    size_by='magnitude',
-    animate=True
-)
+### Real-Time Early Warning
+- Shallow LSTM suitable for deployment (fast inference, high accuracy)
+- 78% precision means 22% false alarm rate (acceptable for emergency response)
+- 62% recall means 38% missed aftershocks (room for improvement)
 
-# Visualize learned propagation network
-viz.plot_propagation_network(
-    model=trained_gcn_model,
-    graph_data=test_graphs,
-    show_attention=True
-)
-```
+### Model Efficiency
+- LSTM: 26K parameters, F1 = 0.6958
+- DNN: 14.5K parameters, F1 = 0.6667
+- GNN: 12.6K parameters, F1 = 0.6555
+- CNN: 1.07M parameters, F1 = 0.5448
+- **Lesson:** More parameters don't guarantee better performance
 
-### **Custom Graph Construction**
-```python
-from src.data import GraphBuilder
+### Integration with USGS Systems
+- Models can process new earthquakes in real-time
+- Compatible with existing ShakeAlert early warning infrastructure
+- Potential to improve post-earthquake response planning
 
-builder = GraphBuilder(
-    spatial_threshold=50,    # km
-    temporal_threshold=30,   # days
-    min_magnitude=3.0
-)
+## Future Work
 
-# Create earthquake propagation graph
-graph = builder.build_spatiotemporal_graph(earthquake_events)
+### 1. Ensemble Methods
+- Combine LSTM + DNN predictions for improved robustness
+- Weighted averaging based on confidence scores
+- Stack models with meta-learner
 
-# Add geological context
-graph = builder.add_fault_connections(graph, fault_data)
-```
+### 2. Physics-Informed Graph Neural Networks
+- Use Coulomb stress transfer models for graph edges
+- Incorporate fault geometry and slip models
+- Weight edges by stress change magnitude
 
----
+### 3. Attention Mechanisms
+- Temporal attention: which past earthquakes matter most?
+- Spatial attention: which locations are most relevant?
+- Interpret attention weights for scientific insights
 
-## 🎓 **Academic Context**
+### 4. Transfer Learning
+- Train on California data, test on other seismic regions (Japan, Chile, Turkey)
+- Fine-tune on regional datasets
+- Evaluate cross-region generalization
 
-### **Course Information**
-- **Course**: SE4050 - Deep Learning
-- **Institution**: Sri Lanka Institute of Information Technology (SLIIT)
-- **Semester**: July 2025
-- **Assignment**: Final Project (100 marks)
-- **Duration**: 12 weeks
+### 5. Multi-Task Learning
+- Jointly predict: aftershock occurrence, magnitude distribution, spatial extent
+- Shared representations across tasks
+- Improve overall prediction quality
 
-### **Learning Objectives**
-- ✅ Apply deep learning to real-world seismic data
-- ✅ Implement cutting-edge GNN architectures
-- ✅ Develop spatiotemporal modeling skills
-- ✅ Create scientific visualizations and interpretations
-- ✅ Compare multiple deep learning approaches
+### 6. Real-Time Deployment
+- Integrate with USGS real-time feeds
+- Containerized deployment (Docker/Kubernetes)
+- API for emergency response systems
+- Dashboard for seismologists
 
-### **Deliverables**
-- **Technical Report** (comprehensive analysis and results)
-- **Code Repository** (complete implementation)
-- **VIVA Presentation** (20-minute demonstration)
-- **Video Demo** (10-minute YouTube presentation)
+## Limitations
 
----
+1. **Geographic Scope:** Trained only on Southern California; may not generalize globally
+2. **Temporal Definition:** 7-day window is arbitrary; aftershocks can occur months later
+3. **Class Balance:** Near-balanced dataset may not reflect all seismic regions
+4. **Feature Engineering:** Hand-crafted features may miss important patterns
+5. **Dataset Size:** 5,727 samples limits deep learning effectiveness
+6. **Physics Integration:** Models are data-driven; don't explicitly incorporate seismic physics
 
-## 🤝 **Contributing**
+## Academic Context
 
-We welcome contributions from the research community!
+### Course Information
+- **Course:** SE4050 - Deep Learning
+- **Institution:** Sri Lanka Institute of Information Technology (SLIIT)
+- **Semester:** Year 4, Semester 1 (2024/2025)
+- **Project Type:** Comparative Deep Learning Analysis
 
-### **How to Contribute**
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
+## License
 
-### **Areas for Contribution**
-- 🔬 **Novel GNN architectures** for spatiotemporal data
-- 📊 **Additional visualization techniques**
-- 🌍 **New regional datasets** and validation
-- ⚡ **Performance optimizations**
-- 📚 **Documentation improvements**
+This project is licensed under the MIT License - see the LICENSE file for details.
 
----
+## Acknowledgments
 
-## 📜 **License**
+- **Data Source:** USGS Earthquake Catalog
+- **Inspiration:** ShakeAlert Early Warning System
+- **Libraries:** PyTorch, PyTorch Geometric, Scikit-learn, ObsPy
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Contact
 
----
+For questions or collaboration opportunities:
+- **GitHub:** [@IT22000644](https://github.com/IT22000644)
+- **Email:** manilkadikkumbura17@gmail.com
+- **Repository:** https://github.com/IT22000644/Seismic-GNN-Prediction
 
-## 🙏 **Acknowledgments**
+## Additional Resources
 
-### **Datasets & Tools**
-- **[STEAD Dataset](https://github.com/smousavi05/STEAD)** by Stanford Seismology Lab
-- **[SeisBench](https://seisbench.readthedocs.io/)** machine learning framework
-- **[PyTorch Geometric](https://pytorch-geometric.readthedocs.io/)** for GNN implementation
-- **[USGS](https://earthquake.usgs.gov/)** for earthquake catalogs and fault databases
-
-### **Research Community**
-- Stanford Seismology Lab for pioneering ML applications in seismology
-- PyTorch Geometric team for advancing graph neural networks
-- Global seismological community for open data sharingseismic-gnn-team@sliit.lk
-
----
-
-## 👥 **Team**
-
-<div align="center">
-
-### **SE4050 Deep Learning Project Team**
-
-| Role | Name | Student ID | Email | LinkedIn |
-|------|------|------------|-------|----------|
-| **Team Leader** | [M N Dikkumbura] | [IT22000644] | [it22000644@my.sliit.lk] | [LinkedIn] |
-| **Data Engineer** | [Name 2] | [ID] | [email@my.sliit.lk] | [LinkedIn] |
-| **ML Engineer** | [Name 3] | [ID] | [email@my.sliit.lk] | [LinkedIn] |
-| **Visualization Specialist** | [Name 4] | [ID] | [email@my.sliit.lk] | [LinkedIn] |
-
-**Instructor**: Dr. Mahima  
-**Institution**: Sri Lanka Institute of Information Technology  
-**Project Duration**: July - November 2025
-
-</div>
-
----
-
-## 📞 **Contact & Support**
-
-### **Project Links**
-- **🐙 Repository**: https://github.com/IT22000644/Seismic-GNN-Prediction
-- **📊 Documentation**: 
-- **🎥 Demo Video**: [YouTube Link]
-
-### **Get Help**
-- **📋 Issues**: [GitHub Issues](https://github.com/IT22000644/Seismic-GNN-Prediction/issues)
-- **💬 Discussions**: [GitHub Discussions](https://github.com/IT22000644/Seismic-GNN-Prediction/discussions)
-- **📧 Email**: manilkadikkumbura17@gmail.com
-
----
-
-<div align="center">
-
-### **🌟 Star this repository if you find it useful! 🌟**
-
-**Made with ❤️ for advancing earthquake science through deep learning**
-
-*Bridging the gap between artificial intelligence and seismology*
-
----
-
-![Earthquake Animation](https://via.placeholder.com/600x300/1f77b4/ffffff?text=3D+Spatiotemporal+Earthquake+Visualization)
-
-*Interactive 3D visualization of earthquake propagation patterns*
-
-</div>
+**Best Model:** Shallow LSTM (F1 = 0.6958) - Ready for deployment testing
