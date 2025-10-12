@@ -27,6 +27,25 @@ This project evaluates multiple deep learning approaches to predict whether an e
 - **Class Balance:** 48% negative, 52% positive (well-balanced)
 - **Aftershock Definition:** Subsequent earthquake within 7 days and 50km radius
 
+### Data Sources
+
+**Primary Dataset:**
+- **USGS Earthquake Catalog:** [https://earthquake.usgs.gov/earthquakes/search/](https://earthquake.usgs.gov/earthquakes/search/)
+- **API Access:** [https://earthquake.usgs.gov/fdsnws/event/1/](https://earthquake.usgs.gov/fdsnws/event/1/)
+- **ComCat Documentation:** [https://earthquake.usgs.gov/data/comcat/](https://earthquake.usgs.gov/data/comcat/)
+
+**Supplementary Data:**
+- **Quaternary Fault Database:** [https://www.usgs.gov/programs/earthquake-hazards/faults](https://www.usgs.gov/programs/earthquake-hazards/faults)
+- **Plate Boundaries (PB2002 Model):** [http://peterbird.name/oldftp/PB2002/PB2002_boundaries.dig.txt](http://peterbird.name/oldftp/PB2002/PB2002_boundaries.dig.txt)
+
+**Query Parameters Used:**
+```
+Region: Southern California (32°N-36°N, -121°W--114°W)
+Magnitude: ≥3.5
+Time Range: 1990-01-01 to 2024-12-31
+Format: CSV/GeoJSON
+```
+
 ## Architecture Comparisons
 
 ### 1. Deep Neural Networks (DNN)
