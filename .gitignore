@@ -24,6 +24,7 @@ wheels/
 
 # Data files (too large for git)
 data/raw/*
+data/interim/*
 data/processed/*
 data/external/*
 !data/.gitkeep
